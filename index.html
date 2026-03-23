@@ -1,1 +1,678 @@
 
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+<title>Credit Days ROI</title>
+
+<link href=https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap rel="stylesheet">
+
+<style>
+
+  :root {
+
+    --ink: #0f1923;
+
+    --ink-soft: #3a4a5c;
+
+    --ink-faint: #8a9bb0;
+
+    --paper: #f5f2eb;
+
+    --gold: #c8922a;
+
+    --gold-lt: #f0d99a;
+
+    --gold-bg: #fdf6e3;
+
+    --border: rgba(15,25,35,0.12);
+
+  }
+
+ 
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+ 
+
+  body {
+
+    background: var(--paper);
+
+    color: var(--ink);
+
+    font-family: 'DM Sans', sans-serif;
+
+    min-height: 100vh;
+
+    min-height: 100dvh;
+
+    display: flex;
+
+    flex-direction: column;
+
+  }
+
+ 
+
+  header {
+
+    background: var(--ink);
+
+    color: var(--paper);
+
+    padding: 28px 24px 24px;
+
+    position: relative;
+
+    overflow: hidden;
+
+  }
+
+  header::after {
+
+    content: '';
+
+    position: absolute;
+
+    bottom: 0; left: 0; right: 0;
+
+    height: 3px;
+
+    background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold));
+
+  }
+
+  .eyebrow {
+
+    font-family: 'DM Mono', monospace;
+
+    font-size: 10px;
+
+    letter-spacing: 0.16em;
+
+    text-transform: uppercase;
+
+    color: var(--gold);
+
+    margin-bottom: 8px;
+
+  }
+
+  header h1 {
+
+    font-family: 'DM Serif Display', serif;
+
+    font-size: 26px;
+
+    font-weight: 400;
+
+    line-height: 1.2;
+
+  }
+
+  header h1 em { font-style: italic; color: var(--gold-lt); }
+
+ 
+
+  main {
+
+    flex: 1;
+
+    padding: 24px 20px 40px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+
+    max-width: 480px;
+
+    width: 100%;
+
+    margin: 0 auto;
+
+  }
+
+ 
+
+  .card {
+
+    background: #fff;
+
+    border: 1px solid var(--border);
+
+    border-radius: 6px;
+
+    overflow: hidden;
+
+    box-shadow: 0 1px 12px rgba(15,25,35,0.06);
+
+  }
+
+ 
+
+  .card-title {
+
+    padding: 13px 18px 12px;
+
+    border-bottom: 1px solid var(--border);
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.1em;
+
+    text-transform: uppercase;
+
+    color: var(--ink-soft);
+
+  }
+
+ 
+
+  .field {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 14px 18px;
+
+    border-bottom: 1px solid var(--border);
+
+    gap: 12px;
+
+  }
+
+  .field:last-child { border-bottom: none; }
+
+ 
+
+  .field-label {
+
+    font-size: 14px;
+
+    color: var(--ink-soft);
+
+    flex-shrink: 0;
+
+  }
+
+ 
+
+  .field-input-wrap {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    background: var(--paper);
+
+    border: 1.5px solid var(--border);
+
+    border-radius: 4px;
+
+    padding: 7px 10px;
+
+    min-width: 120px;
+
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+  }
+
+  .field-input-wrap:focus-within {
+
+    border-color: var(--gold);
+
+    box-shadow: 0 0 0 3px rgba(200,146,42,0.12);
+
+    background: var(--gold-bg);
+
+  }
+
+ 
+
+  .unit {
+
+    font-family: 'DM Mono', monospace;
+
+    font-size: 12px;
+
+    color: var(--ink-faint);
+
+    flex-shrink: 0;
+
+  }
+
+ 
+
+  input[type="number"] {
+
+    width: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    font-family: 'DM Mono', monospace;
+
+    font-size: 15px;
+
+    font-weight: 500;
+
+    color: var(--ink);
+
+    outline: none;
+
+    text-align: right;
+
+    -moz-appearance: textfield;
+
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+ 
+
+  .result-card {
+
+    background: var(--ink);
+
+    border-radius: 6px;
+
+    overflow: hidden;
+
+    box-shadow: 0 4px 24px rgba(15,25,35,0.14);
+
+    position: relative;
+
+  }
+
+  .result-card::before {
+
+    content: '';
+
+    position: absolute;
+
+    top: 0; left: 0; right: 0;
+
+    height: 3px;
+
+    background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold));
+
+  }
+
+ 
+
+  .result-grid {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+  }
+
+ 
+
+  .result-item {
+
+    padding: 28px 16px 22px;
+
+    text-align: center;
+
+  }
+
+  .result-item:first-child {
+
+    border-right: 1px solid rgba(255,255,255,0.08);
+
+  }
+
+ 
+
+  .result-item-label {
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.14em;
+
+    text-transform: uppercase;
+
+    color: rgba(245,242,235,0.4);
+
+    margin-bottom: 10px;
+
+  }
+
+ 
+
+  .result-item-value {
+
+    font-family: 'DM Serif Display', serif;
+
+    font-size: 34px;
+
+    line-height: 1;
+
+    letter-spacing: -0.02em;
+
+    color: var(--paper);
+
+  }
+
+  .result-item-value.accent { color: var(--gold-lt); }
+
+ 
+
+  .result-item-sub {
+
+    margin-top: 6px;
+
+    font-size: 11px;
+
+    color: rgba(245,242,235,0.3);
+
+    font-family: 'DM Mono', monospace;
+
+  }
+
+ 
+
+  .saving-strip {
+
+    border-top: 1px solid rgba(255,255,255,0.07);
+
+    padding: 12px 20px;
+
+    text-align: center;
+
+    font-family: 'DM Mono', monospace;
+
+    font-size: 11.5px;
+
+    color: rgba(200,146,42,0.75);
+
+    letter-spacing: 0.03em;
+
+    line-height: 1.5;
+
+  }
+
+ 
+
+  @keyframes pop {
+
+    0%   { transform: scale(1); }
+
+    45%  { transform: scale(1.06); }
+
+    100% { transform: scale(1); }
+
+  }
+
+  .pop { animation: pop 0.28s cubic-bezier(0.34,1.56,0.64,1); }
+
+</style>
+
+</head>
+
+<body>
+
+ 
+
+<header>
+
+  <div class="eyebrow">Bajaj Finance · Credit Ops</div>
+
+  <h1>Credit Days <em>ROI</em></h1>
+
+</header>
+
+ 
+
+<main>
+
+ 
+
+  <div class="card">
+
+    <div class="card-title">Inputs</div>
+
+ 
+
+    <div class="field">
+
+      <span class="field-label">Loan Amount</span>
+
+      <div class="field-input-wrap">
+
+        <span class="unit">₹</span>
+
+        <input type="number" id="loan" value="1000000" min="1000" step="10000" inputmode="numeric">
+
+      </div>
+
+    </div>
+
+ 
+
+    <div class="field">
+
+      <span class="field-label">Annual ROI</span>
+
+      <div class="field-input-wrap">
+
+        <input type="number" id="roi" value="10" min="1" max="36" step="0.1" inputmode="decimal">
+
+        <span class="unit">%</span>
+
+      </div>
+
+    </div>
+
+ 
+
+    <div class="field">
+
+      <span class="field-label">Tenure</span>
+
+      <div class="field-input-wrap">
+
+        <input type="number" id="tenure" value="12" min="1" max="84" step="1" inputmode="numeric">
+
+        <span class="unit">mo</span>
+
+      </div>
+
+    </div>
+
+ 
+
+    <div class="field">
+
+      <span class="field-label">Credit Days</span>
+
+      <div class="field-input-wrap">
+
+        <input type="number" id="creditDays" value="30" min="0" max="90" step="1" inputmode="numeric">
+
+        <span class="unit">d</span>
+
+      </div>
+
+    </div>
+
+ 
+
+  </div>
+
+ 
+
+  <div class="result-card">
+
+    <div class="result-grid">
+
+      <div class="result-item">
+
+        <div class="result-item-label">Effective ROI</div>
+
+        <div class="result-item-value accent" id="res-roi">—</div>
+
+        <div class="result-item-sub">quote to customer</div>
+
+      </div>
+
+      <div class="result-item">
+
+        <div class="result-item-label">Customer EMI</div>
+
+        <div class="result-item-value" id="res-emi">—</div>
+
+        <div class="result-item-sub">per month</div>
+
+      </div>
+
+    </div>
+
+    <div class="saving-strip" id="res-saving"></div>
+
+  </div>
+
+ 
+
+</main>
+
+ 
+
+<script>
+
+  function solveRate(n, pmt, pv, guess) {
+
+    let r = guess || 0.01;
+
+    for (let i = 0; i < 300; i++) {
+
+      const f  = pv * Math.pow(1+r, n) + pmt * (Math.pow(1+r, n) - 1) / r;
+
+      const h  = 1e-8;
+
+      const f2 = pv * Math.pow(1+r+h, n) + pmt * (Math.pow(1+r+h, n) - 1) / (r+h);
+
+      const dr = f / ((f2 - f) / h);
+
+      r -= dr;
+
+      if (Math.abs(dr) < 1e-12) break;
+
+    }
+
+    return r;
+
+  }
+
+ 
+
+  function fmtINR(n) {
+
+    return '₹' + Math.round(n).toLocaleString('en-IN');
+
+  }
+
+ 
+
+  function triggerPop(id) {
+
+    const el = document.getElementById(id);
+
+    el.classList.remove('pop');
+
+    void el.offsetWidth;
+
+    el.classList.add('pop');
+
+  }
+
+ 
+
+  function calculate() {
+
+    const L  = parseFloat(document.getElementById('loan').value)       || 0;
+
+    const ar = parseFloat(document.getElementById('roi').value)         || 0;
+
+    const n  = parseFloat(document.getElementById('tenure').value)      || 0;
+
+    const cd = parseFloat(document.getElementById('creditDays').value)  || 0;
+
+ 
+
+    if (!L || !ar || !n) return;
+
+ 
+
+    const r  = ar / 100 / 12;
+
+    const cf = cd / 30;
+
+ 
+
+    const emi_std = L * r / (1 - Math.pow(1+r, -n));
+
+    const emi_adj = L * r / (Math.pow(1+r, cf) * (1 - Math.pow(1+r, -n)));
+
+ 
+
+    const r_eff  = solveRate(n, -emi_adj, L, r * 0.85);
+
+    const roi_eff = r_eff * 12 * 100;
+
+    const saving  = ar - roi_eff;
+
+    const emi_save = emi_std - emi_adj;
+
+ 
+
+    document.getElementById('res-roi').textContent = roi_eff.toFixed(2) + '%';
+
+    document.getElementById('res-emi').textContent = fmtINR(emi_adj);
+
+    document.getElementById('res-saving').textContent =
+
+      `↓ ${saving.toFixed(2)}% vs original ${ar.toFixed(2)}%  ·  EMI saving ${fmtINR(emi_save)}/mo`;
+
+ 
+
+    triggerPop('res-roi');
+
+    triggerPop('res-emi');
+
+  }
+
+ 
+
+  document.querySelectorAll('input').forEach(el => el.addEventListener('input', calculate));
+
+  calculate();
+
+</script>
+
+</body>
+
+</html>

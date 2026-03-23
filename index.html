@@ -683,9 +683,23 @@
 
   loanInput.addEventListener('input', updateLoanDisplay);
 
-  loanInput.addEventListener('focus', () => loanDisplay.style.opacity = '0');
+  loanInput.addEventListener('focus', () => {
 
-  loanInput.addEventListener('blur',  () => { loanDisplay.style.opacity = '1'; updateLoanDisplay(); });
+    loanInput.style.color = 'var(--ink)';
+
+    loanDisplay.style.opacity = '0';
+
+  });
+
+  loanInput.addEventListener('blur', () => {
+
+    loanInput.style.color = 'transparent';
+
+    loanDisplay.style.opacity = '1';
+
+    updateLoanDisplay();
+
+  });
 
  
 

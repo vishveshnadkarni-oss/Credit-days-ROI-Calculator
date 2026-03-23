@@ -417,6 +417,50 @@
 
  
 
+  .calc-btn {
+
+    width: 100%;
+
+    padding: 16px;
+
+    background: var(--gold);
+
+    color: var(--ink);
+
+    border: none;
+
+    border-radius: 6px;
+
+    font-family: 'DM Sans', sans-serif;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.04em;
+
+    cursor: pointer;
+
+    box-shadow: 0 2px 12px rgba(200,146,42,0.3);
+
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+
+    -webkit-tap-highlight-color: transparent;
+
+  }
+
+  .calc-btn:active {
+
+    transform: scale(0.97);
+
+    background: #b07d20;
+
+    box-shadow: 0 1px 6px rgba(200,146,42,0.2);
+
+  }
+
+ 
+
   @keyframes pop {
 
     0%   { transform: scale(1); }
@@ -461,11 +505,23 @@
 
       <span class="field-label">Loan Amount</span>
 
-      <div class="field-input-wrap">
+      <div class="field-input-wrap" style="position:relative;">
 
         <span class="unit">₹</span>
 
-        <input type="number" id="loan" value="1000000" min="1000" step="10000" inputmode="numeric">
+        <input type="number" id="loan" value="1000000" min="1000" step="10000" inputmode="numeric"
+
+               style="color:transparent; caret-color: var(--ink);">
+
+        <span id="loanDisplay" style="
+
+          position:absolute; right:10px; top:50%; transform:translateY(-50%);
+
+          font-family:'DM Mono',monospace; font-size:15px; font-weight:500;
+
+          color:var(--ink); pointer-events:none; user-select:none;
+
+        ">10,00,000</span>
 
       </div>
 
@@ -525,6 +581,10 @@
 
  
 
+  <button class="calc-btn" id="calcBtn">Calculate</button>
+
+ 
+
   <div class="result-card">
 
     <div class="result-grid">
@@ -550,8 +610,6 @@
       </div>
 
     </div>
-
-    <div class="saving-strip" id="res-saving"></div>
 
   </div>
 
@@ -611,15 +669,35 @@
 
  
 
+  const loanInput = document.getElementById('loan');
+
+  const loanDisplay = document.getElementById('loanDisplay');
+
+  function updateLoanDisplay() {
+
+    const v = parseFloat(loanInput.value);
+
+    loanDisplay.textContent = v ? v.toLocaleString('en-IN') : '';
+
+  }
+
+  loanInput.addEventListener('input', updateLoanDisplay);
+
+  loanInput.addEventListener('focus', () => loanDisplay.style.opacity = '0');
+
+  loanInput.addEventListener('blur',  () => { loanDisplay.style.opacity = '1'; updateLoanDisplay(); });
+
+ 
+
   function calculate() {
 
-    const L  = parseFloat(document.getElementById('loan').value)       || 0;
+    const L  = parseFloat(document.getElementById('loan').value)          || 0;
 
-    const ar = parseFloat(document.getElementById('roi').value)         || 0;
+    const ar = parseFloat(document.getElementById('roi').value)           || 0;
 
-    const n  = parseFloat(document.getElementById('tenure').value)      || 0;
+    const n  = parseFloat(document.getElementById('tenure').value)        || 0;
 
-    const cd = parseFloat(document.getElementById('creditDays').value)  || 0;
+    const cd = parseFloat(document.getElementById('creditDays').value)    || 0;
 
  
 
@@ -627,35 +705,21 @@
 
  
 
-    const r  = ar / 100 / 12;
+    const r   = ar / 100 / 12;
 
-    const cf = cd / 30;
-
- 
-
-    const emi_std = L * r / (1 - Math.pow(1+r, -n));
+    const cf  = cd / 30;
 
     const emi_adj = L * r / (Math.pow(1+r, cf) * (1 - Math.pow(1+r, -n)));
 
- 
-
-    const r_eff  = solveRate(n, -emi_adj, L, r * 0.85);
+    const r_eff   = solveRate(n, -emi_adj, L, r * 0.85);
 
     const roi_eff = r_eff * 12 * 100;
-
-    const saving  = ar - roi_eff;
-
-    const emi_save = emi_std - emi_adj;
 
  
 
     document.getElementById('res-roi').textContent = roi_eff.toFixed(2) + '%';
 
     document.getElementById('res-emi').textContent = fmtINR(emi_adj);
-
-    document.getElementById('res-saving').textContent =
-
-      `↓ ${saving.toFixed(2)}% vs original ${ar.toFixed(2)}%  ·  EMI saving ${fmtINR(emi_save)}/mo`;
 
  
 
@@ -667,9 +731,13 @@
 
  
 
-  document.querySelectorAll('input').forEach(el => el.addEventListener('input', calculate));
+  document.getElementById('calcBtn').addEventListener('click', calculate);
 
-  calculate();
+  document.querySelectorAll('input').forEach(el => {
+
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+
+  });
 
 </script>
 
